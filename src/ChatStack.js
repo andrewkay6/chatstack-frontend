@@ -22,24 +22,29 @@ const ChatStack = () => {
         setMessage("");
     }
     const handleIncomingData = (data) => {
-        
-        setMessageHistory(...messageHistory, data )
 
-    }
+        const parsedData = JSON.parse(data);
+  
+        setMessageHistory(prevMessageHistory => [...prevMessageHistory, parsedData]);
+      };
     
     useEffect(() => {
 
         socket.on('connect', () =>{
             setIsConnected(true);
         });
+        socket.on('disconnect', () =>{
+            setIsConnected(false);
+        });
 
         socket.on('data', (data) =>{
+            console.log('test')
             handleIncomingData(data['data']);
-            console.log(data['data']);
         });
         return () => {
             socket.off('connect');
             socket.off('disconnect');
+            socket.off('data');
         }
     }, [])
 
@@ -47,7 +52,7 @@ const ChatStack = () => {
     return (
         <>
         <label htmlFor='userName'>username: </label>
-        <input id="userName"></input>
+        <input id="userName" value={username} onChange={ (e) => {setUsername(e.target.value)}}></input>
         <MessageHistory messageHistory = {messageHistory} setMessageHistory = {setMessageHistory}/>
         <UserInput message = {message} setMessage = {setMessage}/>
         
