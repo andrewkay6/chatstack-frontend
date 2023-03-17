@@ -1,64 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import MessageHistory from './MessageHistory';
-import UserInput from './UserInput';
-import io, { Socket } from 'socket.io-client';
+import React, {useState} from "react";
+import WelcomePage from "./WelcomePage";
+import LoginScreen from "./LoginScreen";
+import SignUp from "./SignUp";
+import ChatWindow from "./ChatWindow";
 
-
-const socket = io("localhost:5000/", {
-    transports: ["websocket"],
-    cors: {
-      origin: "http://localhost:3000",
-    },
-  });
 
 const ChatStack = () => {
-    const [messageHistory, setMessageHistory] = useState([]);
-    const [message, setMessage] = useState("");
-    const [isConnected, setIsConnected] = useState(socket.connected);
-    const [username, setUsername] = useState("");
-    
-    const sendMessage = () => {
-        socket.emit("send_message", JSON.stringify({message : message, username: username}));
-        setMessage("");
+    const [appState, setAppState] = useState("welcomePage");
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    let pageContents = (<></>);
+    if (appState === "welcomePage"){
+        pageContents = (
+            <WelcomePage appState={appState} setAppState={setAppState}/>
+        );
     }
-    const handleIncomingData = (data) => {
-
-        const parsedData = JSON.parse(data);
-  
-        setMessageHistory(prevMessageHistory => [...prevMessageHistory, parsedData]);
-      };
+    if (appState === "signUp"){
+        pageContents = (
+            <SignUp appState={appState} setAppState={setAppState}/>
+        );
     
-    useEffect(() => {
-
-        socket.on('connect', () =>{
-            setIsConnected(true);
-        });
-        socket.on('disconnect', () =>{
-            setIsConnected(false);
-        });
-
-        socket.on('data', (data) =>{
-            console.log('test')
-            handleIncomingData(data['data']);
-        });
-        return () => {
-            socket.off('connect');
-            socket.off('disconnect');
-            socket.off('data');
-        }
-    }, [])
+    }
+    if (appState === "chat"){
+        pageContents = (
+            <ChatWindow username="test"/>
+        );
+        
+    }
 
 
     return (
         <>
-        <label htmlFor='userName'>username: </label>
-        <input id="userName" value={username} onChange={ (e) => {setUsername(e.target.value)}}></input>
-        <MessageHistory messageHistory = {messageHistory} setMessageHistory = {setMessageHistory}/>
-        <UserInput message = {message} setMessage = {setMessage}/>
-        
-        <button onClick={sendMessage}>send</button>
+        {appState}
+        {pageContents}
         </>
     );
 }
+
 
 export default ChatStack;

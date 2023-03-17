@@ -1,14 +1,15 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
 
-    const [loginState, setLoginState] = useState("oldUser");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [token, setToken] = useState("")
+    const [loginMessage, setLoginMessage] = useState((<></>));
+    const [enableButtons, setEnableButtons] = useState(true); 
 
-    const testLogin = async () => {
+    const tryLogin = async () => {
 
         console.log(token)
         const requestOptions = {
@@ -24,10 +25,12 @@ const LoginScreen = () => {
         const response = await fetch('http://localhost:5000/api/getsession', requestOptions);
         const data = await response.json();
 
-        console.log(data);
+        if (data['messageType'] === 'S'){
+            props.setAppState("chat");
+        }
     }
-
     const submitLogin = async () => {
+        setEnableButtons(false);
         await getCSRF();
 
         const requestOptions = {
@@ -44,10 +47,23 @@ const LoginScreen = () => {
         const response = await fetch('http://localhost:5000/api/login', requestOptions);
         const data = await response.json();
 
+        handleLoginResult(data);
+        
+        setEnableButtons(true);
+
         console.log(data);
 
 
 
+    }
+    const handleLoginResult = (data) => {
+        if (data['messageType'] === 'E'){
+            setLoginMessage(<div style={{color: "red"}}>{data['message']}</div>)
+        }
+        if (data['messageType'] === 'S'){
+            console.log('setChat')
+            props.setAppState('chat');
+        }
     }
     const getCSRF = async () => {
         const requestOptions = {
@@ -62,19 +78,21 @@ const LoginScreen = () => {
         console.log(data);
     }
 
+
     return (
         <div className="loginScreenContainer">
-            <h1>User Login</h1>
+            <div>User Login</div>
             <label htmlFor='username'>username: </label>
-            <input id="username" value={username} onChange={(e) => { setUsername(e.target.value) }}></input>
-
+            <input id="username" value={username} onChange={(e) => { setUsername(e.target.value) }} disabled={!enableButtons}></input>
+            <br/>
             <label htmlFor='password'>password: </label>
-            <input id="password" value={password} onChange={(e) => { setPassword(e.target.value) }}></input>
+            <input id="password" value={password} onChange={(e) => { setPassword(e.target.value) } } disabled={!enableButtons}></input>
+            <br/>
+            
+            <button id="login" onClick={submitLogin} disabled={!enableButtons}>login</button> 
 
-
-            <button id="login" onClick={submitLogin}>login</button> <br />
-
-            <button id="testLogin" onClick={testLogin}>test</button>
+            <br/>
+            {loginMessage}
 
         </div>
 
