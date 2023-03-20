@@ -6,8 +6,8 @@ import LoginScreen from './LoginScreen';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+
     <ChatStack/>
-  </React.StrictMode>
+
 );
 

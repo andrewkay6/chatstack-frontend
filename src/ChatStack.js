@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import WelcomePage from "./WelcomePage";
 import LoginScreen from "./LoginScreen";
 import SignUp from "./SignUp";
@@ -23,7 +23,7 @@ const ChatStack = () => {
     }
     if (appState === "chat"){
         pageContents = (
-            <ChatWindow username="test"/>
+            <ChatWindow appState={appState}/>
         );
         
     }

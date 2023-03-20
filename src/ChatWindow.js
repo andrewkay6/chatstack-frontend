@@ -14,11 +14,29 @@ const socket = io("localhost:5000/", {
 const ChatWindow = (props) => {
     const [messageHistory, setMessageHistory] = useState([]);
     const [message, setMessage] = useState("");
-    const [isConnected, setIsConnected] = useState(socket.connected);
+    const [isConnected, setIsConnected] = useState(true);
     const [username, setUsername] = useState(props.username);
     
     let disconnectMessage = (<></>);
 
+
+    const getMessageHistory = async () => {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+              'Accept': 'application/json, text/javascript, */*; q=0.01',
+              "Content-Type": "application/json", 
+            },
+            credentials: "include",
+            body: JSON.stringify({ numberOfRows: "", startFromID: "" }),
+          }
+
+        const response = await fetch('http://localhost:5000/api/fetch-message-history', requestOptions);
+        const data = await response.json();
+
+        console.log(data)
+        setMessageHistory(data['messages']);
+    }
     const sendMessage = () => {
         socket.emit("send_message", JSON.stringify({message : message, username: username}));
         setMessage("");
@@ -44,7 +62,6 @@ const ChatWindow = (props) => {
         });
         socket.on('disconnect', () =>{
             console.log('disconnect');
-            createDisconnectMessage();
             setIsConnected(false);
         });
 
@@ -53,6 +70,9 @@ const ChatWindow = (props) => {
 
             handleIncomingData(data);
         });
+        
+        getMessageHistory();
+        
         return () => {
             socket.off('connect');
             socket.off('disconnect');

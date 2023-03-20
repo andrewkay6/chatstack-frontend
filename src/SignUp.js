@@ -14,7 +14,7 @@ const SignUp = (props) => {
     }
 
     const handleSubmitClick = async () => {
-        if (password != repeatPassword){
+        if (password !== repeatPassword){
             return;
         }
         const requestOptions = {
@@ -38,9 +38,9 @@ const SignUp = (props) => {
         <label htmlFor="username">username:</label>
         <input id="username"onChange={(e) => {setUsername(e.target.value)}}></input><br/>
         <label htmlFor="password">password:</label>
-        <input id="password"></input> <br/>
+        <input id="password" onChange={(e) => {setPassword(e.target.value)}}></input> <br/>
         <label htmlFor="passwordRepeat">repeat password:</label>
-        <input id="passwordRepeat"></input><br/>
+        <input id="passwordRepeat" onChange={(e) => {setRepeatPassword(e.target.value)}}></input><br/>
         {warningMessage}
         <button id="submit" onClick={handleSubmitClick}>Submit</button><br/>
         <button id="returnToWelcomePage" onClick={handleReturnToWelcomePagePress}>Return to welcome page</button>

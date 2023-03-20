@@ -4,11 +4,11 @@ const MessageHistory = ({ messageHistory }) => {
   return (
     <div>
       <table>
-        <tbody>
+        <tbody>         
           {messageHistory.map((messageObject, index) => (
             <tr key={index}>
-              <td>{messageObject.username}: </td>
-              <td>{messageObject.message}</td>
+              <td>{messageObject}</td>
+
             </tr>
           ))}
         </tbody>
