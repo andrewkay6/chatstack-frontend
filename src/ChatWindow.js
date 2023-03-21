@@ -34,19 +34,34 @@ const ChatWindow = (props) => {
         const response = await fetch('http://localhost:5000/api/fetch-message-history', requestOptions);
         const data = await response.json();
 
-        console.log(data)
-        setMessageHistory(data['messages']);
+        setMessageHistory(formatMessageHistory(data['messages']));
     }
     const sendMessage = () => {
         socket.emit("send_message", JSON.stringify({message : message, username: username}));
         setMessage("");
     }
+    const formatMessageHistory = (messageHistoryJSON) =>{
+        let formattedMessageHistory = [];
+        for (let i = 0; i < messageHistoryJSON.length; i++){
+            let messageHistoryObject = {};
+            messageHistoryObject['messageID'] = messageHistoryJSON[i][0];
+            messageHistoryObject['message'] = messageHistoryJSON[i][1];
+            messageHistoryObject['dateTime'] = messageHistoryJSON[i][2];
+            messageHistoryObject['userID'] = messageHistoryJSON[i][3];
+
+            formattedMessageHistory.push(messageHistoryObject);
+        }
+        console.log()
+        return formattedMessageHistory;
+
+    }
     const handleIncomingData = (data) => {
 
         const parsedData = JSON.parse(data);
         console.log(parsedData)
+        let formattedMessageHistory = formatMessageHistory();
   
-        setMessageHistory(prevMessageHistory => [...prevMessageHistory, parsedData]);
+        setMessageHistory(prevMessageHistory => [...prevMessageHistory, formatMessageHistory]);
       };
     
     const createDisconnectMessage = () => {
