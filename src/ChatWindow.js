@@ -40,21 +40,35 @@ const ChatWindow = (props) => {
         socket.emit("send_message", JSON.stringify({message : message, username: username}));
         setMessage("");
     }
-    const formatMessageHistory = (messageHistoryJSON) =>{
+    
+    const formatMessageHistory = (messageHistoryJSON) => {
         let formattedMessageHistory = [];
+        let currentMessageBlock = {username : null, messageContent : []};
         for (let i = 0; i < messageHistoryJSON.length; i++){
             let messageHistoryObject = {};
+      
             messageHistoryObject['messageID'] = messageHistoryJSON[i][0];
             messageHistoryObject['message'] = messageHistoryJSON[i][1];
             messageHistoryObject['dateTime'] = parseDate(messageHistoryJSON[i][2]);
             messageHistoryObject['userID'] = messageHistoryJSON[i][3];
             messageHistoryObject['username'] = messageHistoryJSON[i][4];
 
-            formattedMessageHistory.push(messageHistoryObject);
-        }
-        console.log()
-        return formattedMessageHistory;
+            if (i === (messageHistoryJSON.length - 1)){
+                currentMessageBlock['username'] = messageHistoryObject['username']
+            }
+            if(currentMessageBlock['username'] === messageHistoryObject['username']) {             
+                formattedMessageHistory.push(currentMessageBlock);
+                currentMessageBlock = {username : messageHistoryObject['username'] , messageContent : [{messageHistoryObject}]};
+              
+            }
+            else {
+                currentMessageBlock['messageContent'].push(messageHistoryObject);
+            }
+            
 
+            
+        }
+        return formattedMessageHistory;
     }
     const handleIncomingData = (data) => {
 
