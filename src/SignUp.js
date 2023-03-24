@@ -6,8 +6,6 @@ const SignUp = (props) => {
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     
-
-    //let warningMessage = (<div style={{color: "red"}}>Passwords must match!</div>);
     let warningMessage = (<></>);
     const handleReturnToWelcomePagePress = () => {
         props.setAppState("welcomePage");

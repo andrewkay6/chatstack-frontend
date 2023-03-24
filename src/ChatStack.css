@@ -1,0 +1,81 @@
+
+html {
+    background-color: rgb(29, 29, 29);
+    color: rgb(167, 167, 167);
+}
+textarea {
+    resize: none;   
+}
+
+.sendContainer {
+    display: flex;
+    height: 50px;
+    background: rgb(167, 167, 167);
+}
+
+.dateTimeData{
+    font-size: 70%;
+    vertical-align: bottom;
+}
+.messageHistory {
+    outline: 2px;
+    background:rgb(51, 51, 51);
+    color: rgb(209, 209, 209);
+    border-radius: 5px;
+}
+.usernameData {
+    font-size: 150%;
+}
+.sendContainer {
+    border-radius: 5px;
+}
+div.sendContainer textarea {
+    width: 90%;
+    border: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    
+}
+div.sendContainer button {
+    width: 10%;
+}
+
+.messageHistoryTableContainer {
+    height: 150%;
+    
+}
+.chatContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.chatWindowContainer{  
+    width: 100%;
+}
+.welcomeContainer{
+    display: flex;
+    margin: auto auto;
+    flex-direction: column;
+    max-width: 768px;
+    align-items: center;
+    justify-content: space-around;
+    text-align: center;
+    min-height: 100vh;
+    
+
+}
+.welcomePageTitle{
+    font-size: 200%;
+}
+.welcomePageHeader{
+    font-size: 120%;
+}
+.appContainer{
+    min-height: 100vh;  
+}
+.messageHeader{
+    display: flex;
+    justify-content: space-between;
+}

@@ -16,7 +16,7 @@ const ChatWindow = (props) => {
     const [message, setMessage] = useState("");
     const [isConnected, setIsConnected] = useState(true);
     const [username, setUsername] = useState(props.username);
-    
+    const databaseTimezone = "GMT"
     let disconnectMessage = (<></>);
 
 
@@ -28,13 +28,13 @@ const ChatWindow = (props) => {
               "Content-Type": "application/json", 
             },
             credentials: "include",
-            body: JSON.stringify({ numberOfRows: "", startFromID: "" }),
+            body: JSON.stringify({ numberOfMessages: "10", startFromID: "" }),
           }
 
-        const response = await fetch('http://localhost:5000/api/fetch-message-history', requestOptions);
+        const response = await fetch('http://localhost:5000/api/fetch-newest-messages', requestOptions);
         const data = await response.json();
 
-        setMessageHistory(formatMessageHistory(data['messages']));
+        setMessageHistory(formatMessageHistory(data['messages']).reverse());
     }
     const sendMessage = () => {
         socket.emit("send_message", JSON.stringify({message : message, username: username}));
@@ -46,8 +46,9 @@ const ChatWindow = (props) => {
             let messageHistoryObject = {};
             messageHistoryObject['messageID'] = messageHistoryJSON[i][0];
             messageHistoryObject['message'] = messageHistoryJSON[i][1];
-            messageHistoryObject['dateTime'] = messageHistoryJSON[i][2];
+            messageHistoryObject['dateTime'] = parseDate(messageHistoryJSON[i][2]);
             messageHistoryObject['userID'] = messageHistoryJSON[i][3];
+            messageHistoryObject['username'] = messageHistoryJSON[i][4];
 
             formattedMessageHistory.push(messageHistoryObject);
         }
@@ -59,11 +60,25 @@ const ChatWindow = (props) => {
 
         const parsedData = JSON.parse(data);
         console.log(parsedData)
-        let formattedMessageHistory = formatMessageHistory();
-  
-        setMessageHistory(prevMessageHistory => [...prevMessageHistory, formatMessageHistory]);
+        let formattedMessageHistory = formatMessageHistory(parsedData['messages']);
+        setMessageHistory(prevMessageHistory => [...prevMessageHistory, ...formattedMessageHistory]);
       };
     
+      
+    const parseDate = (dateString) => {
+        //The database is expected to output YYYY-MM-DD HH:MM:MM (this comes from json.dumps(default=str) in python)
+        //The database stores values in GMT by default
+
+        let newDate = new Date(Date.parse(dateString +  " " + databaseTimezone))
+
+        //newDateString = Date.parse(newDateString)
+        let options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+        let formattedNewDate = newDate.toLocaleString('en-US', options);
+
+        return formattedNewDate;
+        //return newDate.toString();
+
+    } 
     const createDisconnectMessage = () => {
         disconnectMessage = (
             <div style={{color: 'red'}}> Your session has expired! Click here to redirect yourself to the login page.</div>
@@ -81,8 +96,6 @@ const ChatWindow = (props) => {
         });
 
         socket.on('data', (data) =>{
-            console.log('test')
-
             handleIncomingData(data);
         });
         
@@ -97,13 +110,13 @@ const ChatWindow = (props) => {
 
 
     return (
-        <>
+        <div className='chatWindowContainer'>
         <MessageHistory messageHistory = {messageHistory} setMessageHistory = {setMessageHistory}/>
-        <UserInput message = {message} setMessage = {setMessage}/>
-        <button onClick={sendMessage}>send</button>
-        {disconnectMessage}
-
-        </>
+        <div className='sendContainer'>
+            <UserInput message = {message} setMessage = {setMessage}/>
+            <button onClick={sendMessage}>send</button>
+        </div>
+        </div>
     );
 }
 

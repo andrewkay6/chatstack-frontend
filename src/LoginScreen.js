@@ -81,12 +81,16 @@ const LoginScreen = (props) => {
 
     return (
         <div className="loginScreenContainer">
-            <div>User Login</div>
-            <label htmlFor='username'>username: </label>
-            <input id="username" value={username} onChange={(e) => { setUsername(e.target.value) }} disabled={!enableButtons}></input>
+            <input id="username"
+            placeholder="Username" 
+            value={username} 
+            onChange={(e) => { setUsername(e.target.value) }} 
+            disabled={!enableButtons}/>
             <br/>
-            <label htmlFor='password'>password: </label>
-            <input id="password" value={password} onChange={(e) => { setPassword(e.target.value) } } disabled={!enableButtons}></input>
+            <input id="password" 
+            value={password} 
+            placeholder="Password"
+            onChange={(e) => { setPassword(e.target.value) } } disabled={!enableButtons}></input>
             <br/>
             
             <button id="login" onClick={submitLogin} disabled={!enableButtons}>login</button> 

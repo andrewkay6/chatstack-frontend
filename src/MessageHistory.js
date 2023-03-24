@@ -1,27 +1,39 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 const MessageHistory = ({ messageHistory }) => {
+  const [showDateTime, setShowDateTime] = useState(true);
+
   
+  
+  let messageHistoryContents = (<></>);
+
+  
+
+  
+  messageHistoryContents = (
+    <div className="messageHistoryTableContainer">
+      <div className="messageHistoryTable">
+        {messageHistory.map((messageObject, index) => (
+          <React.Fragment key={messageObject['messageID']}>
+            <div className="messageContainer">
+              <div className="messageHeader">
+                <div className="usernameData" >{messageObject['username']}</div>
+                <div className='dateTimeData' >{messageObject['dateTime']}</div>
+              </div>
+              <div className="messageData">
+                <td >{messageObject['message']}</td>
+              </div>
+            </div>
+          </React.Fragment>
+        ))}
+
+      </div>
+    </div>
+  );
+
   return (
-    <div>
-      <table>
-        <tbody>
-          <tr>
-            <th>Message ID</th>
-            <th>Message</th>
-            <th>Timestamp</th>
-            <th>User ID</th>  
-          </tr>         
-          {messageHistory.map((messageObject, index) => (
-            <tr key={index}>
-              <td>{messageObject['messageID']}</td>
-              <td>{messageObject['message']}</td>
-              <td>{messageObject['dateTime']}</td>
-              <td>{messageObject['userID']}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className='messageHistory'>
+      {messageHistoryContents}
     </div>
   );
 };

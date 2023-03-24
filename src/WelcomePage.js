@@ -17,16 +17,15 @@ const WelcomePage = (props) => {
     
 
     return (
-        <>
-        <div className="title">Welcome To ChatStack</div>
+        <div className="newUserContainer">
+        <div className="welcomePageTitle">Welcome To ChatStack</div>
         
         <LoginScreen appState={props.appState} setAppState={props.setAppState}/>
         
-        <button id="guestLogin">Continue As Guest</button>
 
-        <div className="header">New To ChatStack?</div>
+        <div className="welcomePageHeader">New To ChatStack?</div>
         <button id="signUp" onClick={handleSignUpPress}>Sign Up!</button>
-        </>
+        </div>
     );
 }
 
