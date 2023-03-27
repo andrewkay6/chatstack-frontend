@@ -2,7 +2,10 @@ import React from "react"
 
 const UserInput = (props) => {
     const handleChange = (event) => {
-        props.setMessage(event.target.value)
+        if (event.target.value.length <= 500){
+            props.setMessage(event.target.value)
+        }
+        
     }
     const handleKeyPress = (event) => {
         if (event.key === 'Enter'){
@@ -15,7 +18,12 @@ const UserInput = (props) => {
     }
     return (
         <>
-        <textarea onChange={handleChange} value={props.message} onKeyDown={handleKeyPress}></textarea>
+        <textarea 
+        onChange={handleChange} 
+        value={props.message} 
+        spellCheck="true"
+        onKeyDown={handleKeyPress}></textarea>
+        
         </>
     );
 }
