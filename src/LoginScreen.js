@@ -7,7 +7,7 @@ const LoginScreen = (props) => {
     const [password, setPassword] = useState("");
     const [token, setToken] = useState("")
     const [loginMessage, setLoginMessage] = useState((<></>));
-    const [enableButtons, setEnableButtons] = useState(true); 
+    const [enableButtons, setEnableButtons] = useState(true);
 
     const tryLogin = async () => {
 
@@ -25,7 +25,7 @@ const LoginScreen = (props) => {
         const response = await fetch('http://localhost:5000/api/getsession', requestOptions);
         const data = await response.json();
 
-        if (data['messageType'] === 'S'){
+        if (data['messageType'] === 'S') {
             props.setAppState("chat");
         }
     }
@@ -36,19 +36,19 @@ const LoginScreen = (props) => {
         const requestOptions = {
             method: "POST",
             headers: {
-              'Accept': 'application/json, text/javascript, */*; q=0.01',
-              "Content-Type": "application/json",
-              "X-CSRFToken": token
+                'Accept': 'application/json, text/javascript, */*; q=0.01',
+                "Content-Type": "application/json",
+                "X-CSRFToken": token
             },
             credentials: "include",
             body: JSON.stringify({ username: username, password: password }),
-          }
+        }
 
         const response = await fetch('http://localhost:5000/api/login', requestOptions);
         const data = await response.json();
 
         handleLoginResult(data);
-        
+
         setEnableButtons(true);
 
         console.log(data);
@@ -57,10 +57,10 @@ const LoginScreen = (props) => {
 
     }
     const handleLoginResult = (data) => {
-        if (data['messageType'] === 'E'){
-            setLoginMessage(<div style={{color: "red"}}>{data['message']}</div>)
+        if (data['messageType'] === 'E') {
+            setLoginMessage(<div style={{ color: "red" }}>{data['message']}</div>)
         }
-        if (data['messageType'] === 'S'){
+        if (data['messageType'] === 'S') {
             console.log('setChat')
             props.setAppState('chat');
         }
@@ -81,21 +81,24 @@ const LoginScreen = (props) => {
 
     return (
         <div className="loginScreenContainer">
-            <input id="username"
-            placeholder="Username" 
-            value={username} 
-            onChange={(e) => { setUsername(e.target.value) }} 
-            disabled={!enableButtons}/>
-            <br/>
-            <input id="password" 
-            value={password} 
-            placeholder="Password"
-            onChange={(e) => { setPassword(e.target.value) } } disabled={!enableButtons}></input>
-            <br/>
-            
-            <button id="login" onClick={submitLogin} disabled={!enableButtons}>login</button> 
+            <div className="loginScreenInputContainer">
+                <input id="username"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => { setUsername(e.target.value) }}
+                    disabled={!enableButtons} />
+                <br />
+                <input id="password"
+                    value={password}
+                    type="password"
+                    placeholder="Password"
+                    onChange={(e) => { setPassword(e.target.value) }} disabled={!enableButtons}></input>
+                <br />
+            </div>
 
-            <br/>
+            <button id="login" onClick={submitLogin} disabled={!enableButtons}>Login</button>
+           
+            <br />
             {loginMessage}
 
         </div>

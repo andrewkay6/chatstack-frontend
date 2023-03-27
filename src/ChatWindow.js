@@ -11,12 +11,16 @@ const socket = io("localhost:5000/", {
     },
   });
 
+const numberOfMessagesToPreload = "50";
+const databaseTimezone = "GMT";
+
 const ChatWindow = (props) => {
     const [messageHistory, setMessageHistory] = useState([]);
+    const [messageList, setMessageList] = useState([]);
     const [message, setMessage] = useState("");
     const [isConnected, setIsConnected] = useState(true);
     const [username, setUsername] = useState(props.username);
-    const databaseTimezone = "GMT"
+    
     let disconnectMessage = (<></>);
 
 
@@ -28,55 +32,71 @@ const ChatWindow = (props) => {
               "Content-Type": "application/json", 
             },
             credentials: "include",
-            body: JSON.stringify({ numberOfMessages: "10", startFromID: "" }),
+            body: JSON.stringify({ numberOfMessages: numberOfMessagesToPreload, startFromID: "" }),
           }
 
         const response = await fetch('http://localhost:5000/api/fetch-newest-messages', requestOptions);
         const data = await response.json();
-
-        setMessageHistory(formatMessageHistory(data['messages']).reverse());
+        const messages = messageHistoryToObjectList(data['messages']).reverse();
+        
+        setMessageList(messages);
+        console.log(formatMessageHistory(messageList))
+        setMessageHistory(formatMessageHistory(messages));
     }
     const sendMessage = () => {
         socket.emit("send_message", JSON.stringify({message : message, username: username}));
         setMessage("");
     }
     
-    const formatMessageHistory = (messageHistoryJSON) => {
+    const formatMessageHistory = (messageHistoryList) => {
         let formattedMessageHistory = [];
-        let currentMessageBlock = {username : null, messageContent : []};
-        for (let i = 0; i < messageHistoryJSON.length; i++){
+        let currentMessageBlock = {username: "", messageContent: []};
+        for (let i = 0; i < messageHistoryList.length; i++) {
+          let messageHistoryObject = messageHistoryList[i];
+      
+          if ( currentMessageBlock.username !== messageHistoryObject.username) {
+            formattedMessageHistory.push(currentMessageBlock);
+            currentMessageBlock = {
+              username: messageHistoryObject.username,
+              messageContent: [messageHistoryObject],
+            };
+          } else {
+            currentMessageBlock.messageContent.push(messageHistoryObject);
+          }
+        }
+        formattedMessageHistory.push(currentMessageBlock); // add the last message block
+        return formattedMessageHistory;
+      }
+    const messageHistoryToObjectList = (messageHistory) => {
+        let messageHistoryObjectList = [];
+        
+        for (let i = 0; i < messageHistory.length; i++){
             let messageHistoryObject = {};
       
-            messageHistoryObject['messageID'] = messageHistoryJSON[i][0];
-            messageHistoryObject['message'] = messageHistoryJSON[i][1];
-            messageHistoryObject['dateTime'] = parseDate(messageHistoryJSON[i][2]);
-            messageHistoryObject['userID'] = messageHistoryJSON[i][3];
-            messageHistoryObject['username'] = messageHistoryJSON[i][4];
+            messageHistoryObject['messageID'] = messageHistory[i][0];
+            messageHistoryObject['message'] = messageHistory[i][1];
+            messageHistoryObject['dateTime'] = parseDate(messageHistory[i][2]);
+            messageHistoryObject['userID'] = messageHistory[i][3];
+            messageHistoryObject['username'] = messageHistory[i][4];
 
-            if (i === (messageHistoryJSON.length - 1)){
-                currentMessageBlock['username'] = messageHistoryObject['username']
-            }
-            if(currentMessageBlock['username'] === messageHistoryObject['username']) {             
-                formattedMessageHistory.push(currentMessageBlock);
-                currentMessageBlock = {username : messageHistoryObject['username'] , messageContent : [{messageHistoryObject}]};
-              
-            }
-            else {
-                currentMessageBlock['messageContent'].push(messageHistoryObject);
-            }
-            
-
-            
+            messageHistoryObjectList.push(messageHistoryObject);
         }
-        return formattedMessageHistory;
+
+
+        return messageHistoryObjectList;
     }
+
     const handleIncomingData = (data) => {
 
         const parsedData = JSON.parse(data);
-        console.log(parsedData)
-        let formattedMessageHistory = formatMessageHistory(parsedData['messages']);
-        setMessageHistory(prevMessageHistory => [...prevMessageHistory, ...formattedMessageHistory]);
+
+        let newMessage = messageHistoryToObjectList(parsedData['messages']);
+        const messages = (oldMessageHistory => [... oldMessageHistory, ...newMessage])
+        setMessageList(messages);
+        setMessageHistory(formatMessageHistory(messages));
+
       };
+    
     
       
     const parseDate = (dateString) => {
@@ -85,12 +105,11 @@ const ChatWindow = (props) => {
 
         let newDate = new Date(Date.parse(dateString +  " " + databaseTimezone))
 
-        //newDateString = Date.parse(newDateString)
         let options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
         let formattedNewDate = newDate.toLocaleString('en-US', options);
 
         return formattedNewDate;
-        //return newDate.toString();
+        
 
     } 
     const createDisconnectMessage = () => {
@@ -127,7 +146,7 @@ const ChatWindow = (props) => {
         <div className='chatWindowContainer'>
         <MessageHistory messageHistory = {messageHistory} setMessageHistory = {setMessageHistory}/>
         <div className='sendContainer'>
-            <UserInput message = {message} setMessage = {setMessage}/>
+            <UserInput message = {message} setMessage = {setMessage} sendMessage = {sendMessage}/>
             <button onClick={sendMessage}>send</button>
         </div>
         </div>

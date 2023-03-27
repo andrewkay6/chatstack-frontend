@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import './WelcomePage.css';
 import LoginScreen from "./LoginScreen";
 const WelcomePage = (props) => {
@@ -14,18 +14,19 @@ const WelcomePage = (props) => {
         props.setAppState("signUp")
     }
 
-    
+
 
     return (
-        <div className="newUserContainer">
-        <div className="welcomePageTitle">Welcome To ChatStack</div>
-        
-        <LoginScreen appState={props.appState} setAppState={props.setAppState}/>
-        
+        <>
+            <div className="welcomePageTitle">Welcome To ChatStack</div>
 
-        <div className="welcomePageHeader">New To ChatStack?</div>
-        <button id="signUp" onClick={handleSignUpPress}>Sign Up!</button>
-        </div>
+            <LoginScreen appState={props.appState} setAppState={props.setAppState} />
+
+            <div className="newUserContainer">
+                <div className="welcomePageHeader">New To ChatStack?</div>
+                <button id="signUp" onClick={handleSignUpPress}>Sign Up!</button>
+            </div>
+        </>
     );
 }
 
