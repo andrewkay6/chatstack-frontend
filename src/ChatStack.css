@@ -36,8 +36,9 @@ textarea {
     background:rgb(51, 51, 51);
     color: rgb(209, 209, 209);
     border-radius: 5px;
-    flex: 1;
-    
+    max-height: 100vh;
+    overflow-y: scroll;
+    flex: 1;   
     
 }
 
@@ -61,16 +62,20 @@ div.sendContainer button {
 
 .messageHistoryTable {
     margin: 0.5% 0.5% 0.5% 0.5%;
+    
+    height: 100%;
 }
 .chatContainer{
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    max-height: 100vh;
 }
 .chatWindowContainer{  
     width: 100%;
     min-height: 100vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -100,7 +105,8 @@ div.sendContainer button {
     font-size: 120%;
 }
 .appContainer{
-    min-height: 100vh;  
+    min-height: 100vh;
+    max-height: 100vh;  
 }
 .messageContainer{
     display: flex;
@@ -133,8 +139,8 @@ button {
     padding: 3% 5%;
 }
 
-.signUpContainer button:hover, 
-.welcomeContainer button:hover {
+ 
+button:hover {
     background-color: rgb(126, 126, 126);
 }
 .loginScreenContainer{
