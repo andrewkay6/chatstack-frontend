@@ -18,12 +18,12 @@ input, textarea, button {
 }
 
 textarea {
-    resize: none;   
+    resize: none;
+    height : 120%;  
 }
 
 .sendContainer {
     display: flex;
-    height: 50px;
     background: rgb(167, 167, 167);
 }
 

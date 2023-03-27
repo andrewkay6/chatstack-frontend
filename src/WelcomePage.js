@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import './WelcomePage.css';
 import LoginScreen from "./LoginScreen";
 const WelcomePage = (props) => {
 
