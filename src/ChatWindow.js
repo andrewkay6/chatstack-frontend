@@ -87,16 +87,8 @@ const ChatWindow = (props) => {
   const handleIncomingData = (data) => {
 
     const parsedData = JSON.parse(data);
-
     const newMessage = messageHistoryToObjectList(parsedData['messages']);
-
-    const messages = [...messageList, ...newMessage]
-    
-    console.log(messageList);
-    
     setMessageList(prevList => [...prevList, ...newMessage]);
-
-    setMessageHistory(formatMessageHistory(messages));
   };
 
 
@@ -156,8 +148,7 @@ const ChatWindow = (props) => {
         console.log("test")
         handleIncomingData(data);
       });
-      
-      
+         
     } 
     return () => {
       if (socket !== null) {
@@ -168,6 +159,9 @@ const ChatWindow = (props) => {
     }
   }, [socket])
 
+  useEffect(() => {
+    setMessageHistory(formatMessageHistory(messageList));
+  }, [messageList]);
 
 
   return (
