@@ -89,7 +89,11 @@ const ChatWindow = (props) => {
     const parsedData = JSON.parse(data);
 
     const newMessage = messageHistoryToObjectList(parsedData['messages']);
+
     const messages = [...messageList, ...newMessage]
+    
+    console.log(messageList);
+    
     setMessageList(prevList => [...prevList, ...newMessage]);
 
     setMessageHistory(formatMessageHistory(messages));
@@ -116,42 +120,54 @@ const ChatWindow = (props) => {
     );
   }
 
-  useEffect(() => {
 
+  useEffect (() => {
     const newSocket = io("http://localhost:5000/", {
       transports: ["websocket"],
       cors: {
         origin: "http://localhost:3000",
       },
     });
+
     setSocket(newSocket);
+
+    getMessageHistory();
+    return () => {
+      if (socket !== null){
+        socket.disconnect();
+      }
+      
+    }
+  }, [])
+  useEffect(() => {
+
     if (socket !== null) {
       socket.on('connect', () => {
         setIsConnected(true);
         props.setAppState("chat");
       });
+      
       socket.on('disconnect', () => {
         console.log('disconnect');
         setIsConnected(false);
       });
 
       socket.on('data', (data) => {
+        console.log("test")
         handleIncomingData(data);
       });
-    }
-
-
-    getMessageHistory();
-
+      
+      
+    } 
     return () => {
       if (socket !== null) {
         socket.off('connect');
         socket.off('disconnect');
         socket.off('data');
       }
-
     }
-  }, [])
+  }, [socket])
+
 
 
   return (
