@@ -14,19 +14,17 @@ const UserInput = (props) => {
     const handleKeyPress = (event) => {
         if (event.key === 'Enter'){
             props.sendMessage();
+            event.preventDefault();
+            props.setMessage("");
         }
-    }
-
-    const isSendShortcut = (event) => {
-        return (event.key === 'Enter' && !(event.shiftKey));
     }
     return (
         <>
-        <textarea 
-        onChange={handleChange} 
+        <textarea  
         value={props.message} 
         spellCheck="true"
-        onKeyDown={handleKeyPress}></textarea>
+        onKeyDown={handleKeyPress}
+        onChange={handleChange}></textarea>
         
         </>
     );

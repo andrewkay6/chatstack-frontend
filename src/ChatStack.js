@@ -13,7 +13,6 @@ const ChatStack = () => {
     if (appState === "welcomePage"){
         pageContents = (
             <div className="welcomeContainer">
-                {appState}
                 <WelcomePage appState={appState} setAppState={setAppState}/>
             </div>
         );

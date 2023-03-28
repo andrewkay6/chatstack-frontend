@@ -17,10 +17,6 @@ const ChatWindow = (props) => {
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(true);
   const [socket, setSocket] = useState(null);
-  //Declare socket here so it's in scope for the entire component, but it is initialized in useEffect
-
-  let disconnectMessage = (<></>);
-
 
   const getMessageHistory = async () => {
     const requestOptions = {
@@ -35,7 +31,7 @@ const ChatWindow = (props) => {
 
     const response = await fetch('http://localhost:5000/api/fetch-newest-messages', requestOptions);
     const data = await response.json();
-    const messages = messageHistoryToObjectList(data['messages']).reverse();
+    const messages = parseIncomingMessages(data['messages']).reverse();
 
     setMessageList(messages);
     console.log(formatMessageHistory(messageList))
@@ -43,7 +39,6 @@ const ChatWindow = (props) => {
   }
   const sendMessage = () => {
     socket.emit("send_message", JSON.stringify({ message: message }));
-    setMessage("");
   }
 
   const formatMessageHistory = (messageHistoryList) => {
@@ -65,29 +60,28 @@ const ChatWindow = (props) => {
     formattedMessageHistory.push(currentMessageBlock);
     return formattedMessageHistory;
   }
-  const messageHistoryToObjectList = (messageHistory) => {
-    let messageHistoryObjectList = [];
+  const parseIncomingMessages = (incomingMessages) => {
+    let parsedMessages = [];
 
-    for (let i = 0; i < messageHistory.length; i++) {
+    for (let i = 0; i < incomingMessages.length; i++) {
       let messageHistoryObject = {};
 
-      messageHistoryObject['messageID'] = messageHistory[i][0];
-      messageHistoryObject['message'] = messageHistory[i][1];
-      messageHistoryObject['dateTime'] = parseDate(messageHistory[i][2]);
-      messageHistoryObject['userID'] = messageHistory[i][3];
-      messageHistoryObject['username'] = messageHistory[i][4];
+      messageHistoryObject['messageID'] = incomingMessages[i][0];
+      messageHistoryObject['message'] = incomingMessages[i][1];
+      messageHistoryObject['dateTime'] = parseDate(incomingMessages[i][2]);
+      messageHistoryObject['userID'] = incomingMessages[i][3];
+      messageHistoryObject['username'] = incomingMessages[i][4];
 
-      messageHistoryObjectList.push(messageHistoryObject);
+      parsedMessages.push(messageHistoryObject);
     }
 
-
-    return messageHistoryObjectList;
+    return parsedMessages;
   }
 
   const handleIncomingData = (data) => {
 
     const parsedData = JSON.parse(data);
-    const newMessage = messageHistoryToObjectList(parsedData['messages']);
+    const newMessage = parseIncomingMessages(parsedData['messages']);
     setMessageList(prevList => [...prevList, ...newMessage]);
   };
 
@@ -106,12 +100,6 @@ const ChatWindow = (props) => {
 
 
   }
-  const createDisconnectMessage = () => {
-    disconnectMessage = (
-      <div style={{ color: 'red' }}> Your session has expired! Click here to redirect yourself to the login page.</div>
-    );
-  }
-
 
   useEffect (() => {
     const newSocket = io("http://localhost:5000/", {
@@ -120,10 +108,9 @@ const ChatWindow = (props) => {
         origin: "http://localhost:3000",
       },
     });
-
     setSocket(newSocket);
-
     getMessageHistory();
+
     return () => {
       if (socket !== null){
         socket.disconnect();
@@ -131,6 +118,7 @@ const ChatWindow = (props) => {
       
     }
   }, [])
+
   useEffect(() => {
 
     if (socket !== null) {
@@ -140,12 +128,10 @@ const ChatWindow = (props) => {
       });
       
       socket.on('disconnect', () => {
-        console.log('disconnect');
         setIsConnected(false);
       });
 
       socket.on('data', (data) => {
-        console.log("test")
         handleIncomingData(data);
       });
          
@@ -168,8 +154,8 @@ const ChatWindow = (props) => {
     <div className='chatWindowContainer'>
       <MessageHistory messageHistory={messageHistory} setMessageHistory={setMessageHistory} />
       <div className='sendContainer'>
-        <UserInput message={message} setMessage={setMessage} sendMessage={sendMessage} socket={socket} />
-        <button onClick={sendMessage}>{isConnected + " send"}</button>
+        <UserInput message={message} setMessage={setMessage} sendMessage={sendMessage} socket={socket} isConnected={isConnected} />
+        <button onClick={sendMessage} disabled={!isConnected}>{isConnected + " send"}</button>
 
       </div>
     </div>
