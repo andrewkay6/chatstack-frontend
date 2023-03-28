@@ -1,11 +1,15 @@
 import React from "react"
+let maxInputLength = 500;
+
 
 const UserInput = (props) => {
     const handleChange = (event) => {
-        if (event.target.value.length <= 500){
+        if (event.target.value.length <= maxInputLength){
             props.setMessage(event.target.value)
         }
-        
+        else{
+            props.setMessage(event.target.value.substring(0,maxInputLength));
+        }
     }
     const handleKeyPress = (event) => {
         if (event.key === 'Enter'){

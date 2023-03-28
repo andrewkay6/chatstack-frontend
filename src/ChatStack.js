@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import WelcomePage from "./WelcomePage";
-import LoginScreen from "./LoginScreen";
 import SignUp from "./SignUp";
 import ChatWindow from "./ChatWindow";
 import "./ChatStack.css";
@@ -14,6 +13,7 @@ const ChatStack = () => {
     if (appState === "welcomePage"){
         pageContents = (
             <div className="welcomeContainer">
+                {appState}
                 <WelcomePage appState={appState} setAppState={setAppState}/>
             </div>
         );
@@ -29,14 +29,12 @@ const ChatStack = () => {
     if (appState === "chat"){
         pageContents = (
             <div className="chatContainer">
-            <ChatWindow appState={appState}/>
             <SettingsBar/>
+            <ChatWindow appState={appState} setAppState={setAppState}/>            
             </div>
-
         );
         
     }
-
     return (
         <div className="appContainer">
         {pageContents}

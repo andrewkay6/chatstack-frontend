@@ -4,23 +4,27 @@ import UserInput from './UserInput';
 import io, { Socket } from 'socket.io-client';
 
 
-const socket = io("localhost:5000/", {
-    transports: ["websocket"],
-    cors: {
-      origin: "http://localhost:3000",
-    },
-  });
-
 const numberOfMessagesToPreload = "50";
 const databaseTimezone = "GMT";
 
 const ChatWindow = (props) => {
+    //This state variable controls the message history that the window will actually display. 
+    //It groups messages from messageList by username.
     const [messageHistory, setMessageHistory] = useState([]);
+    //This state variable contains the actual message history as a list of objects.
     const [messageList, setMessageList] = useState([]);
+    //This is the message that the user is currently typing.
     const [message, setMessage] = useState("");
     const [isConnected, setIsConnected] = useState(true);
-    const [username, setUsername] = useState(props.username);
+
     
+    const socket = io("localhost:5000/", {
+      transports: ["websocket"],
+      cors: {
+        origin: "http://localhost:3000",
+      },
+    });
+
     let disconnectMessage = (<></>);
 
 
@@ -44,7 +48,7 @@ const ChatWindow = (props) => {
         setMessageHistory(formatMessageHistory(messages));
     }
     const sendMessage = () => {
-        socket.emit("send_message", JSON.stringify({message : message, username: username}));
+        socket.emit("send_message", JSON.stringify({message : message}));
         setMessage("");
     }
     
@@ -53,8 +57,8 @@ const ChatWindow = (props) => {
         let currentMessageBlock = {username: "", messageContent: []};
         for (let i = 0; i < messageHistoryList.length; i++) {
           let messageHistoryObject = messageHistoryList[i];
-      
-          if ( currentMessageBlock.username !== messageHistoryObject.username) {
+
+          if (currentMessageBlock.username !== messageHistoryObject.username) {
             formattedMessageHistory.push(currentMessageBlock);
             currentMessageBlock = {
               username: messageHistoryObject.username,
@@ -64,7 +68,7 @@ const ChatWindow = (props) => {
             currentMessageBlock.messageContent.push(messageHistoryObject);
           }
         }
-        formattedMessageHistory.push(currentMessageBlock); // add the last message block
+        formattedMessageHistory.push(currentMessageBlock); 
         return formattedMessageHistory;
       }
     const messageHistoryToObjectList = (messageHistory) => {
@@ -90,11 +94,11 @@ const ChatWindow = (props) => {
 
         const parsedData = JSON.parse(data);
 
-        let newMessage = messageHistoryToObjectList(parsedData['messages']);
-        const messages = (oldMessageHistory => [... oldMessageHistory, ...newMessage])
-        setMessageList(messages);
+        const newMessage = messageHistoryToObjectList(parsedData['messages']);
+        const messages =  [... messageList, ...newMessage]
+        setMessageList(prevList => [...prevList, ...newMessage]);
+        
         setMessageHistory(formatMessageHistory(messages));
-
       };
     
     
@@ -122,6 +126,7 @@ const ChatWindow = (props) => {
 
         socket.on('connect', () =>{
             setIsConnected(true);
+            props.setAppState("chat");
         });
         socket.on('disconnect', () =>{
             console.log('disconnect');
@@ -147,7 +152,8 @@ const ChatWindow = (props) => {
         <MessageHistory messageHistory = {messageHistory} setMessageHistory = {setMessageHistory}/>
         <div className='sendContainer'>
             <UserInput message = {message} setMessage = {setMessage} sendMessage = {sendMessage}/>
-            <button onClick={sendMessage}>send</button>
+            <button onClick={sendMessage}>{isConnected + " send"}</button>
+        
         </div>
         </div>
     );
