@@ -17,13 +17,8 @@ const ChatWindow = (props) => {
     const [message, setMessage] = useState("");
     const [isConnected, setIsConnected] = useState(true);
 
-    
-    const socket = io("localhost:5000/", {
-      transports: ["websocket"],
-      cors: {
-        origin: "http://localhost:3000",
-      },
-    });
+    //Declare socket here so it's in scope for the entire component, but it is initialized in useEffect
+    let socket = "";
 
     let disconnectMessage = (<></>);
 
@@ -124,6 +119,12 @@ const ChatWindow = (props) => {
     
     useEffect(() => {
 
+        socket = io("http://localhost:5000/", {
+          transports: ["websocket"],
+          cors: {
+            origin: "http://localhost:3000",
+          },
+        });
         socket.on('connect', () =>{
             setIsConnected(true);
             props.setAppState("chat");
