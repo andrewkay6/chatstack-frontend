@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import MessageHistory from './MessageHistory';
 import UserInput from './UserInput';
-import io, { Socket } from 'socket.io-client';
+import io from 'socket.io-client';
 import SettingsBar from './SettingsBar';
 import Modal from './Modal';
 import LogoutWindow from './LogoutWindow';
@@ -9,7 +9,7 @@ import SettingsWindow from './SettingsWindow';
 const numberOfMessagesToPreload = "50";
 const databaseTimezone = "GMT";
 
-const ChatWindow = (props) => {
+const ChatWindow = ({setAppState}) => {
   //This state variable controls the message history that the window will actually display. 
   //It groups messages from messageList by username.
   const [messageHistory, setMessageHistory] = useState([]);
@@ -23,7 +23,25 @@ const ChatWindow = (props) => {
   const [modalWindowState, setModalWindowState] = useState("");
   const [modalWindowContents, setModalWindowContents] = useState((<></>));
 
-  const getMessageHistory = async () => {
+  const parseIncomingMessages = useCallback ((incomingMessages) => {
+    let parsedMessages = [];
+
+    for (let i = 0; i < incomingMessages.length; i++) {
+      let messageHistoryObject = {};
+
+      messageHistoryObject['messageID'] = incomingMessages[i][0];
+      messageHistoryObject['message'] = incomingMessages[i][1];
+      messageHistoryObject['dateTime'] = parseDate(incomingMessages[i][2]);
+      messageHistoryObject['userID'] = incomingMessages[i][3];
+      messageHistoryObject['username'] = incomingMessages[i][4];
+
+      parsedMessages.push(messageHistoryObject);
+    }
+
+    return parsedMessages;
+  },[])
+
+  const getMessageHistory = useCallback (async () => {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -41,7 +59,7 @@ const ChatWindow = (props) => {
     setMessageList(messages);
     console.log(formatMessageHistory(messageList))
     setMessageHistory(formatMessageHistory(messages));
-  }
+  },[parseIncomingMessages, messageList])
 
   const sendMessage = () => {
     socket.emit("send_message", JSON.stringify({ message: message }));
@@ -67,30 +85,12 @@ const ChatWindow = (props) => {
     return formattedMessageHistory;
   }
 
-  const parseIncomingMessages = (incomingMessages) => {
-    let parsedMessages = [];
-
-    for (let i = 0; i < incomingMessages.length; i++) {
-      let messageHistoryObject = {};
-
-      messageHistoryObject['messageID'] = incomingMessages[i][0];
-      messageHistoryObject['message'] = incomingMessages[i][1];
-      messageHistoryObject['dateTime'] = parseDate(incomingMessages[i][2]);
-      messageHistoryObject['userID'] = incomingMessages[i][3];
-      messageHistoryObject['username'] = incomingMessages[i][4];
-
-      parsedMessages.push(messageHistoryObject);
-    }
-
-    return parsedMessages;
-  }
-
-  const handleIncomingData = (data) => {
+  const handleIncomingData = useCallback((data) => {
 
     const parsedData = JSON.parse(data);
     const newMessage = parseIncomingMessages(parsedData['messages']);
     setMessageList(prevList => [...prevList, ...newMessage]);
-  }
+  },[parseIncomingMessages])
 
   const parseDate = (dateString) => {
     //The database is expected to output YYYY-MM-DD HH:MM:MM (this comes from json.dumps(default=str) in python)
@@ -113,7 +113,7 @@ const ChatWindow = (props) => {
   const closeModalWindow = () => {
     setShowModalWindow(false);
   }
-  
+
   useEffect(() => {
     const newSocket = io("http://localhost:5000/", {
       transports: ["websocket"],
@@ -130,14 +130,13 @@ const ChatWindow = (props) => {
       }
 
     }
-  }, [])
+  },[getMessageHistory, socket])
 
   useEffect(() => {
-
     if (socket !== null) {
       socket.on('connect', () => {
         setIsConnected(true);
-        props.setAppState("chat");
+        setAppState("chat");
       });
 
       socket.on('disconnect', () => {
@@ -156,13 +155,13 @@ const ChatWindow = (props) => {
         socket.off('data');
       }
     }
-  }, [socket])
+  }, [socket, handleIncomingData, setAppState])
 
   useEffect(() => {
     setMessageHistory(formatMessageHistory(messageList));
   }, [messageList]);
 
-  useEffect(() =>{
+  useEffect(() => {
     switch (modalWindowState) {
       case "logout":
         setModalWindowContents(<LogoutWindow />);
@@ -176,11 +175,9 @@ const ChatWindow = (props) => {
     }
   }, [modalWindowState])
 
-  
-
   return (
     <>
-      <SettingsBar      
+      <SettingsBar
         setShowModalWindow={setShowModalWindow}
         setModalWindowState={setModalWindowState}
       />

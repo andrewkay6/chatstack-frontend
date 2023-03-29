@@ -3,11 +3,9 @@ import WelcomePage from "./WelcomePage";
 import SignUp from "./SignUp";
 import ChatWindow from "./ChatWindow";
 import "./ChatStack.css";
-import SettingsBar from "./SettingsBar";
 
 const ChatStack = () => {
     const [appState, setAppState] = useState("welcomePage");
-    const [loggedIn, setLoggedIn] = useState(false);
 
     let pageContents = (<></>);
     if (appState === "welcomePage"){
