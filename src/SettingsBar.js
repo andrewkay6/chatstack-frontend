@@ -2,13 +2,15 @@ import React from "react";
 import settingsIcon from "./settings.png";
 import logoutIcon from "./logout.png";
 
-const SettingsBar = () => {
+const SettingsBar = ({setShowModalWindow, setModalWindowState}) => {
 
     const handleLogoutClick = () => {
-        console.log('logout');
+        setShowModalWindow(true);
+        setModalWindowState("logout")
     }
     const handleSettingsClick = () => {
-        console.log('settings');
+        setShowModalWindow(true);
+        setModalWindowState("settings")
     }
     return (
         <div className="settingsBarContainer">

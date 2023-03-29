@@ -28,8 +28,7 @@ const ChatStack = () => {
     if (appState === "chat"){
         pageContents = (
             <div className="chatContainer">
-            <SettingsBar/>
-            <ChatWindow appState={appState} setAppState={setAppState}/>            
+                <ChatWindow appState={appState} setAppState={setAppState}/>            
             </div>
         );
         

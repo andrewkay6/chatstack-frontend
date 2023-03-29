@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import MessageHistory from './MessageHistory';
 import UserInput from './UserInput';
 import io, { Socket } from 'socket.io-client';
-
-
+import SettingsBar from './SettingsBar';
+import Modal from './Modal';
+import LogoutWindow from './LogoutWindow';
+import SettingsWindow from './SettingsWindow';
 const numberOfMessagesToPreload = "50";
 const databaseTimezone = "GMT";
 
@@ -17,12 +19,15 @@ const ChatWindow = (props) => {
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(true);
   const [socket, setSocket] = useState(null);
+  const [showModalWindow, setShowModalWindow] = useState(false);
+  const [modalWindowState, setModalWindowState] = useState("");
+  const [modalWindowContents, setModalWindowContents] = useState((<></>));
 
   const getMessageHistory = async () => {
     const requestOptions = {
       method: "POST",
       headers: {
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept': 'application/json',
         "Content-Type": "application/json",
       },
       credentials: "include",
@@ -37,6 +42,7 @@ const ChatWindow = (props) => {
     console.log(formatMessageHistory(messageList))
     setMessageHistory(formatMessageHistory(messages));
   }
+
   const sendMessage = () => {
     socket.emit("send_message", JSON.stringify({ message: message }));
   }
@@ -60,6 +66,7 @@ const ChatWindow = (props) => {
     formattedMessageHistory.push(currentMessageBlock);
     return formattedMessageHistory;
   }
+
   const parseIncomingMessages = (incomingMessages) => {
     let parsedMessages = [];
 
@@ -83,25 +90,31 @@ const ChatWindow = (props) => {
     const parsedData = JSON.parse(data);
     const newMessage = parseIncomingMessages(parsedData['messages']);
     setMessageList(prevList => [...prevList, ...newMessage]);
-  };
-
-
+  }
 
   const parseDate = (dateString) => {
     //The database is expected to output YYYY-MM-DD HH:MM:MM (this comes from json.dumps(default=str) in python)
     //The database stores values in GMT by default
-
     let newDate = new Date(Date.parse(dateString + " " + databaseTimezone))
 
-    let options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+    let options = {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }
+
     let formattedNewDate = newDate.toLocaleString('en-US', options);
-
     return formattedNewDate;
-
-
   }
-
-  useEffect (() => {
+  const closeModalWindow = () => {
+    setShowModalWindow(false);
+  }
+  
+  useEffect(() => {
     const newSocket = io("http://localhost:5000/", {
       transports: ["websocket"],
       cors: {
@@ -112,10 +125,10 @@ const ChatWindow = (props) => {
     getMessageHistory();
 
     return () => {
-      if (socket !== null){
+      if (socket !== null) {
         socket.disconnect();
       }
-      
+
     }
   }, [])
 
@@ -126,7 +139,7 @@ const ChatWindow = (props) => {
         setIsConnected(true);
         props.setAppState("chat");
       });
-      
+
       socket.on('disconnect', () => {
         setIsConnected(false);
       });
@@ -134,8 +147,8 @@ const ChatWindow = (props) => {
       socket.on('data', (data) => {
         handleIncomingData(data);
       });
-         
-    } 
+
+    }
     return () => {
       if (socket !== null) {
         socket.off('connect');
@@ -149,16 +162,54 @@ const ChatWindow = (props) => {
     setMessageHistory(formatMessageHistory(messageList));
   }, [messageList]);
 
+  useEffect(() =>{
+    switch (modalWindowState) {
+      case "logout":
+        setModalWindowContents(<LogoutWindow />);
+        break;
+      case "settings":
+        setModalWindowContents(<SettingsWindow />);
+        break;
+      default:
+        setModalWindowContents(<></>);
+        break;
+    }
+  }, [modalWindowState])
+
+  
 
   return (
-    <div className='chatWindowContainer'>
-      <MessageHistory messageHistory={messageHistory} setMessageHistory={setMessageHistory} />
-      <div className='sendContainer'>
-        <UserInput message={message} setMessage={setMessage} sendMessage={sendMessage} socket={socket} isConnected={isConnected} />
-        <button onClick={sendMessage} disabled={!isConnected}>{isConnected + " send"}</button>
-
+    <>
+      <SettingsBar      
+        setShowModalWindow={setShowModalWindow}
+        setModalWindowState={setModalWindowState}
+      />
+      <Modal
+        handleClose={closeModalWindow}
+        children={modalWindowContents}
+        showModalWindow={showModalWindow}
+      />
+      <div className='chatWindowContainer'>
+        <MessageHistory
+          messageHistory={messageHistory}
+          setMessageHistory={setMessageHistory}
+        />
+        <div className='sendContainer'>
+          <UserInput
+            message={message}
+            setMessage={setMessage}
+            sendMessage={sendMessage}
+            socket={socket}
+            isConnected={isConnected}
+          />
+          <button
+            onClick={sendMessage}
+            disabled={!isConnected}>
+            {isConnected + " send"}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
