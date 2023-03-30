@@ -36,6 +36,8 @@ const ChatWindow = ({setAppState}) => {
       messageHistoryObject['dateTime'] = parseDate(incomingMessages[i][2]);
       messageHistoryObject['userID'] = incomingMessages[i][3];
       messageHistoryObject['username'] = incomingMessages[i][4];
+      messageHistoryObject['userColor'] = incomingMessages[i][5];
+      messageHistoryObject['profilePictureURL'] = incomingMessages[i][6];
 
       parsedMessages.push(messageHistoryObject);
     }
@@ -72,7 +74,7 @@ const ChatWindow = ({setAppState}) => {
 
   const formatMessageHistory = (messageHistoryList) => {
     let formattedMessageHistory = [];
-    let currentMessageBlock = { username: "", messageContent: [] };
+    let currentMessageBlock = { username: "", userColor: "", profilePictureURL: "", messageContent: [] };
     for (let i = 0; i < messageHistoryList.length; i++) {
       let messageHistoryObject = messageHistoryList[i];
 
@@ -80,6 +82,8 @@ const ChatWindow = ({setAppState}) => {
         formattedMessageHistory.push(currentMessageBlock);
         currentMessageBlock = {
           username: messageHistoryObject.username,
+          userColor: messageHistoryObject.userColor,
+          profilePictureURL: messageHistoryObject.profilePictureURL,
           messageContent: [messageHistoryObject],
         };
       } else {
@@ -87,6 +91,7 @@ const ChatWindow = ({setAppState}) => {
       }
     }
     formattedMessageHistory.push(currentMessageBlock);
+    formattedMessageHistory.shift()
     return formattedMessageHistory;
   }
 
@@ -119,6 +124,9 @@ const ChatWindow = ({setAppState}) => {
     setShowModalWindow(false);
   }
 
+  const reconnect = () => {
+    console.log('reconnect');
+  }
   useEffect(() => {
     const newSocket = io("http://localhost:5000/", {
       transports: ["websocket"],
@@ -179,13 +187,16 @@ const ChatWindow = ({setAppState}) => {
         );
         break;
       case "settings":
-        setModalWindowContents(<SettingsWindow />);
+        setModalWindowContents(
+        <SettingsWindow
+        />
+        );
         break;
       default:
         break;
     }
   }, [modalWindowState])
-
+  
   return (
     <>
       <SettingsBar
@@ -193,6 +204,7 @@ const ChatWindow = ({setAppState}) => {
         setShowModalWindow={setShowModalWindow}
         setModalWindowState={setModalWindowState}
         isConnected={isConnected}
+        reconnect={reconnect}
       />
       <Modal
         handleClose={closeModalWindow}

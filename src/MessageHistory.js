@@ -12,7 +12,13 @@ const MessageHistory = ({ messageHistory }) => {
         {messageHistory.map((messageBlock, blockIndex) => (
           <div className="messageBlockContainer" key={`block-${blockIndex}`}>
             <div className="messageBlockHeader">
-              <div className="usernameData">{messageBlock.username}</div>
+              <div className='profilePictureContainer'>
+                <img src={messageBlock.profilePictureURL}
+                    className="profilePicture"
+                />
+              </div>
+              <div className="usernameData" style={{color: messageBlock.userColor}}>{messageBlock.username}</div>
+              
             </div>
             <div className="messageBlockData">
               {messageBlock.messageContent.map((messageObject, messageIndex) => (

@@ -9,7 +9,7 @@ const LogoutWindow = ({handleDisconnect, setAppState}) => {
 
         <div className="logoutWindow">
             <div className="logoutConfirmationMessage">
-                Are you sure you would like to log out?
+                Are you sure you want to log out?
             </div>
             
             <button className="logoutButton" onClick={logoutUser}> Yes, log me out.</button>

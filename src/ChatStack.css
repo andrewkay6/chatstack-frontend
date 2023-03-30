@@ -21,7 +21,7 @@ button {
 }
 
 .messageDateTime {
-    font-size: 60%;
+    font-size: 40%;
     vertical-align: bottom;
     width: 100%;
     color: rgb(138, 138, 138);
@@ -29,6 +29,7 @@ button {
 
 .messageData {
     width: 100%;
+    font-size: 80%;
 }
 
 .messageHistory {
@@ -46,6 +47,7 @@ button {
 
 .usernameData {
     font-size: 200%;
+    margin-left: 1%;
 }
 
 .sendContainer {
@@ -224,15 +226,18 @@ button:disabled{
 .settingsBarContainer {
     background-color: rgb(20, 20, 20);
     flex-shrink: 1;
+    flex-grow: 1;
     flex-basis: 5vh;
     flex-direction: row;
-    max-height: 5vh;
+    max-height: 7vh;
+    min-height: 5vh;
     border-radius: 5px 5px 5px 5px;
     border: rgb(8, 8, 8);
     width: 100%;
     border-radius: 5px;
     display: flex;
-
+    overflow-x: auto;
+    justify-content: center;
 }
 
 .settingsBarContainer img {
@@ -245,11 +250,15 @@ button:disabled{
 .settingsBarContainer > *{
    flex: 1;
 }
-
+.settingsBarIconContainer {
+    max-height: 90%;
+    vertical-align: middle;
+   
+}
 .settingsBarIconContainer img:hover {
     background-color: rgb(121, 121, 121);
     border-radius: 5px;
-    cursor: pointer;
+    cursor: pointer
 
 }
 
@@ -270,7 +279,7 @@ button:disabled{
 .modalMain {
     background-color: rgb(71, 71, 71);
     height: 50%;
-    width: 60%;
+    width: 80%;
     border-radius: 5px;
 }
 .modalMain:has(div.logoutWindow){
@@ -278,6 +287,7 @@ button:disabled{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .display-none {
@@ -305,11 +315,53 @@ button:disabled{
 .settingsWindow input {
     width: 50%;
 }
-.connectionStatusMessage {
+.settingsBarItemContainer {
     align-items: center;
     text-align: center;
     align-content: center;
     height:100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+}
+.settingsBarItemContainer > *{
+    flex: 1;
+    
+}
+.settingsWindowTitle{
+    font-size: 150%;
+    color: white;
+    text-align: center;
+    margin-top: 1%;
+}
+.profilePicture {
+    max-height: 45px;
+    min-width: 45px;
+}
+.messageBlockHeader {
+    display: flex;
+    flex-direction: row;
+    height: 45px;
+}
+.profilePictureContainer {
+    overflow: hidden;
+    border-color: rgb(138, 138, 138);
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 8px;
+    height: 45px;
+    width: 45px;
+   
+}
+.logoutButton {
+    background-color: rgb(155, 2, 2);
 }
 
-
+.disconnectMessage {
+    color: red;
+}
+.disconnectMessage:hover{
+    background-color: rgb(121, 121, 121);
+    border-radius: 5px;
+    cursor: pointer
+}

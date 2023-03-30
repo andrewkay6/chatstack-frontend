@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import validUrl from 'valid-url';
 const SettingsWindow = () => {
-   
+
 
     const [isValidUrl, setIsValidUrl] = useState(true);
-    const [imageURL, setImageURL] = useState("");
+    const [imageURL, setImageURL] = useState("https://media.tenor.com/JewZ29ammecAAAAM/purple-and-brown-chewing-gum.gif");
+    const [reconnectMessage, setReconnectMessage] = useState(<></>)
+
 
     const checkURL = (event) => {
 
@@ -20,20 +22,34 @@ const SettingsWindow = () => {
         checkURL(event)
         setImageURL(event.target.value);
     }
+
+
+
+
     return (
         <div className="settingsWindow">
-            Settings <br/>
-            Profile Picture URL: 
+            <div className="settingsWindowTitle">
+                Settings
+            </div> <br />
+            Profile Picture URL:
             <input
                 type="url"
                 onChange={handleURLUpdate}
                 placeholder="Blank URLs will use the default avatar"
+                defaultValue={imageURL}
             />
             <button>Submit URL</button>
-            <br/>
-            Image Preview:
-            <img src={imageURL}/>
-            <img src={imageURL}/>
+            <br />
+            Image Preview: <br />
+            <div className='profilePictureContainer'>
+                <img src={imageURL}
+                    className="profilePicture"
+                />
+
+            </div>
+            <div>Image not cropped as expected? Upload a square image to an image hosting platform:</div>
+
+        
         </div>
     );
 }
