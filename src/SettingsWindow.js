@@ -49,7 +49,7 @@ const SettingsWindow = () => {
             </div>
             <div>Image not cropped as expected? Upload a square image to an image hosting platform:</div>
 
-        
+            <div>Set user color:</div>
         </div>
     );
 }

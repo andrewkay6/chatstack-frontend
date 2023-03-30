@@ -22,12 +22,12 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
     useEffect(() => {
         if (isConnected){
             setConnectedMessage (
-                <div style={{color: "green"}}>Connected as: abc</div>
+                <div className="connectedMessage">Connected as: abc</div>
             );
         }
         else {
             setConnectedMessage (
-                <div className="disconnectMessage" onClick={handleDisconnectClick}>Disconnected</div>
+                <div className="disconnectMessage" title="Click to refresh" onClick={handleDisconnectClick}>Disconnected</div>
             );
         }
     }, [isConnected])

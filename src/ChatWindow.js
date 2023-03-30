@@ -70,6 +70,7 @@ const ChatWindow = ({setAppState}) => {
 
   const sendMessage = () => {
     socket.emit("send_message", JSON.stringify({ message: message }));
+    setMessage("");
   }
 
   const formatMessageHistory = (messageHistoryList) => {

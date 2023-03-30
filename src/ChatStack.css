@@ -21,7 +21,8 @@ button {
 }
 
 .messageDateTime {
-    font-size: 40%;
+    font-size: 10px;
+
     vertical-align: bottom;
     width: 100%;
     color: rgb(138, 138, 138);
@@ -29,7 +30,7 @@ button {
 
 .messageData {
     width: 100%;
-    font-size: 80%;
+    font-size: 14px;
 }
 
 .messageHistory {
@@ -42,11 +43,13 @@ button {
     flex-shrink: 1;
     flex-basis: 80vh;
 
-
 }
 
 .usernameData {
-    font-size: 200%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 250%;
     margin-left: 1%;
 }
 
@@ -178,10 +181,11 @@ button {
 button:hover:enabled {
     background-color: rgb(126, 126, 126);
     cursor: pointer;
-    
+
 }
-button:disabled{
-    
+
+button:disabled {
+
     color: rgb(124, 124, 124);
 }
 
@@ -226,40 +230,42 @@ button:disabled{
 .settingsBarContainer {
     background-color: rgb(20, 20, 20);
     flex-shrink: 1;
-    flex-grow: 1;
     flex-basis: 5vh;
     flex-direction: row;
-    max-height: 7vh;
+    max-height: 5vh;
     min-height: 5vh;
     border-radius: 5px 5px 5px 5px;
     border: rgb(8, 8, 8);
     width: 100%;
     border-radius: 5px;
     display: flex;
-    overflow-x: auto;
     justify-content: center;
+    align-items: center;
 }
 
 .settingsBarContainer img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 80%;
+    max-height: 4vh;
     margin: auto;
     display: block;
     object-fit: contain;
+    align-self: center;
 }
-.settingsBarContainer > *{
-   flex: 1;
+
+.settingsBarContainer>* {
+    flex: 1;
 }
+
 .settingsBarIconContainer {
     max-height: 90%;
     vertical-align: middle;
-   
+
 }
+
 .settingsBarIconContainer img:hover {
     background-color: rgb(121, 121, 121);
     border-radius: 5px;
     cursor: pointer
-
 }
 
 .modal {
@@ -278,11 +284,12 @@ button:disabled{
 
 .modalMain {
     background-color: rgb(71, 71, 71);
-    height: 50%;
+    height: 70%;
     width: 80%;
     border-radius: 5px;
 }
-.modalMain:has(div.logoutWindow){
+
+.modalMain:has(div.logoutWindow) {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -299,8 +306,9 @@ button:disabled{
     flex-direction: column;
     align-items: center;
 }
+
 .logoutConfirmationMessage {
-    color:white;
+    color: white;
     font-size: 150%;
     font-weight: bold;
     margin-top: 5%;
@@ -311,38 +319,45 @@ button:disabled{
 .settingsWindow {
     overflow-y: scroll;
     height: 100%;
+    color: white;
 }
+
 .settingsWindow input {
     width: 50%;
 }
+
 .settingsBarItemContainer {
     align-items: center;
     text-align: center;
     align-content: center;
-    height:100%;
-    overflow-y: scroll;
+    height: 100%;
+    
     display: flex;
     flex-direction: column;
 }
-.settingsBarItemContainer > *{
+
+.settingsBarItemContainer>* {
     flex: 1;
-    
 }
-.settingsWindowTitle{
+
+.settingsWindowTitle {
     font-size: 150%;
-    color: white;
     text-align: center;
     margin-top: 1%;
 }
+
 .profilePicture {
     max-height: 45px;
     min-width: 45px;
 }
+
 .messageBlockHeader {
     display: flex;
     flex-direction: row;
     height: 45px;
+
 }
+
 .profilePictureContainer {
     overflow: hidden;
     border-color: rgb(138, 138, 138);
@@ -351,16 +366,39 @@ button:disabled{
     border-radius: 8px;
     height: 45px;
     width: 45px;
-   
+
 }
+
 .logoutButton {
     background-color: rgb(155, 2, 2);
 }
 
-.disconnectMessage {
-    color: red;
+
+.connectedMessage, .disconnectMessage{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 1.2em;
 }
-.disconnectMessage:hover{
+.disconnectMessage {
+    color: red;  
+}
+.connectedMessage{
+    color:green;
+}
+@media (min-width: 0px) and (max-width: 345px) {
+    .connectedMessage, .disconnectMessage {
+      font-size: 1px;
+    }
+}
+  @media (max-width: 714px) {
+    .connectedMessage, .disconnectMessage {
+      font-size: 0.9em;
+    }
+  }
+  
+.disconnectMessage:hover {
     background-color: rgb(121, 121, 121);
     border-radius: 5px;
     cursor: pointer

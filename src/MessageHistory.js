@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import guestIcon from './guest.png';
 
 const MessageHistory = ({ messageHistory }) => {
   const [showDateTime, setShowDateTime] = useState(true);
@@ -13,7 +14,7 @@ const MessageHistory = ({ messageHistory }) => {
           <div className="messageBlockContainer" key={`block-${blockIndex}`}>
             <div className="messageBlockHeader">
               <div className='profilePictureContainer'>
-                <img src={messageBlock.profilePictureURL}
+                <img src={messageBlock.profilePictureURL ? messageBlock.profilePictureURL : guestIcon}
                     className="profilePicture"
                 />
               </div>
