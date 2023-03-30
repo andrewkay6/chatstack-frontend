@@ -6,8 +6,7 @@ import SettingsBar from './SettingsBar';
 import Modal from './Modal';
 import LogoutWindow from './LogoutWindow';
 import SettingsWindow from './SettingsWindow';
-const numberOfMessagesToPreload = "50";
-const databaseTimezone = "GMT";
+
 
 const ChatWindow = ({setAppState}) => {
   //This state variable controls the message history that the window will actually display. 
@@ -22,6 +21,9 @@ const ChatWindow = ({setAppState}) => {
   const [showModalWindow, setShowModalWindow] = useState(false);
   const [modalWindowState, setModalWindowState] = useState("");
   const [modalWindowContents, setModalWindowContents] = useState((<></>));
+
+  const numberOfMessagesToPreload = "50";
+  const databaseTimezone = "GMT";
 
   const parseIncomingMessages = useCallback ((incomingMessages) => {
     let parsedMessages = [];
@@ -41,6 +43,10 @@ const ChatWindow = ({setAppState}) => {
     return parsedMessages;
   },[])
 
+
+  const disconnectClient = () => {
+    socket.disconnect();
+  }
   const getMessageHistory = useCallback (async () => {
     const requestOptions = {
       method: "POST",
@@ -57,7 +63,6 @@ const ChatWindow = ({setAppState}) => {
     const messages = parseIncomingMessages(data['messages']).reverse();
 
     setMessageList(messages);
-    console.log(formatMessageHistory(messageList))
     setMessageHistory(formatMessageHistory(messages));
   },[parseIncomingMessages, messageList])
 
@@ -130,7 +135,9 @@ const ChatWindow = ({setAppState}) => {
       }
 
     }
-  },[getMessageHistory, socket])
+    // This effect is only used on mount, so the linter message is unnecessary.
+    // eslint-disable-next-line react-hooks/exhaustive-deps 
+  },[])
 
   useEffect(() => {
     if (socket !== null) {
@@ -164,13 +171,17 @@ const ChatWindow = ({setAppState}) => {
   useEffect(() => {
     switch (modalWindowState) {
       case "logout":
-        setModalWindowContents(<LogoutWindow />);
+        setModalWindowContents(
+          <LogoutWindow 
+            setAppState={setAppState}
+            handleDisconnect={disconnectClient}
+          />
+        );
         break;
       case "settings":
         setModalWindowContents(<SettingsWindow />);
         break;
       default:
-        setModalWindowContents(<></>);
         break;
     }
   }, [modalWindowState])
@@ -178,8 +189,10 @@ const ChatWindow = ({setAppState}) => {
   return (
     <>
       <SettingsBar
+        showModalWindow={showModalWindow}
         setShowModalWindow={setShowModalWindow}
         setModalWindowState={setModalWindowState}
+        isConnected={isConnected}
       />
       <Modal
         handleClose={closeModalWindow}
@@ -202,7 +215,7 @@ const ChatWindow = ({setAppState}) => {
           <button
             onClick={sendMessage}
             disabled={!isConnected}>
-            {isConnected + " send"}
+            {"Send"}
           </button>
         </div>
       </div>

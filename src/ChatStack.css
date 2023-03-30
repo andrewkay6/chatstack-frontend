@@ -40,7 +40,7 @@ button {
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 80vh;
-    
+
 
 }
 
@@ -88,7 +88,7 @@ button {
     min-height: 100vh;
     max-height: 100vh;
     flex-direction: column;
-    
+
 }
 
 .chatWindowContainer {
@@ -133,7 +133,7 @@ button {
 .appContainer {
     min-height: 100vh;
     max-height: 100vh;
-    
+
 }
 
 .messageContainer {
@@ -173,9 +173,14 @@ button {
 }
 
 
-button:hover {
+button:hover:enabled {
     background-color: rgb(126, 126, 126);
     cursor: pointer;
+    
+}
+button:disabled{
+    
+    color: rgb(124, 124, 124);
 }
 
 .loginScreenContainer {
@@ -217,13 +222,13 @@ button:hover {
 }
 
 .settingsBarContainer {
-    background-color: rgb(20, 20, 20);  
+    background-color: rgb(20, 20, 20);
     flex-shrink: 1;
     flex-basis: 5vh;
     flex-direction: row;
     max-height: 5vh;
     border-radius: 5px 5px 5px 5px;
-    border:rgb(8, 8, 8);
+    border: rgb(8, 8, 8);
     width: 100%;
     border-radius: 5px;
     display: flex;
@@ -237,38 +242,74 @@ button:hover {
     display: block;
     object-fit: contain;
 }
-.settingsBarIconContainer{
+.settingsBarContainer > *{
    flex: 1;
 }
+
 .settingsBarIconContainer img:hover {
     background-color: rgb(121, 121, 121);
     border-radius: 5px;
     cursor: pointer;
 
 }
+
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width:100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-  }
-  
-  .modal-main {
-    position:fixed;
-    background: white;
-    width: 80%;
-    height: auto;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
-  }
-  
-  .display-block {
-    display: block;
-  }
-  
-  .display-none {
+    background: rgb(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalMain {
+    background-color: rgb(71, 71, 71);
+    height: 50%;
+    width: 60%;
+    border-radius: 5px;
+}
+.modalMain:has(div.logoutWindow){
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.display-none {
     display: none;
-  }
+}
+
+.logoutWindow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.logoutConfirmationMessage {
+    color:white;
+    font-size: 150%;
+    font-weight: bold;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+
+.settingsWindow {
+    overflow-y: scroll;
+    height: 100%;
+}
+.settingsWindow input {
+    width: 50%;
+}
+.connectionStatusMessage {
+    align-items: center;
+    text-align: center;
+    align-content: center;
+    height:100%;
+}
+
+
