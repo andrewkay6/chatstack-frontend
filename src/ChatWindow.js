@@ -135,6 +135,7 @@ const ChatWindow = ({ setAppState }) => {
         setModalWindowContents(
           <SettingsWindow
             userInfo={userInfo}
+            setUserInfo={setUserInfo}
           />
         );
         break;

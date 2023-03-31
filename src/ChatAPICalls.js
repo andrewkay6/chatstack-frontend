@@ -34,4 +34,21 @@ const fetchMessageHistory = async () => {
     return data;
   }
 
-  export {fetchMessageHistory, fetchUserInfo}
+  const updateUserInfo = async (newUserInfo) => {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(newUserInfo)
+    }
+
+    const response = await fetch('http://localhost:5000/api/update-user-info', requestOptions);
+    const data = await response.json();
+
+    return data;
+  }
+
+  export {fetchMessageHistory, fetchUserInfo, updateUserInfo}
