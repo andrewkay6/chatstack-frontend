@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { BlockPicker } from 'react-color'
 import validUrl from 'valid-url';
 import guestIcon from './guest.png';
-const SettingsWindow = () => {
+import MessageBlockHeader from "./MessageBlockHeader";
+const SettingsWindow = ({ userInfo }) => {
 
 
     const [isValidUrl, setIsValidUrl] = useState(true);
-    const [imageURL, setImageURL] = useState("https://media.tenor.com/JewZ29ammecAAAAM/purple-and-brown-chewing-gum.gif");
+    const [imageURL, setImageURL] = useState(userInfo['profilePictureURL']);
     const [reconnectMessage, setReconnectMessage] = useState(<></>)
-
+    const [color, setColor] = useState({});
 
     const checkURL = (event) => {
 
@@ -29,25 +31,25 @@ const SettingsWindow = () => {
             <div className="settingsWindowTitle">
                 Settings
             </div> <br />
+            <MessageBlockHeader
+                profilePictureURL={imageURL}
+                userColor={color}
+                username={userInfo['username']}
+            />
             Profile Picture URL:
             <input
                 type="url"
                 onChange={handleURLUpdate}
                 placeholder="Blank URLs will use the default avatar"
-                defaultValue={imageURL}
+                defaultValue={userInfo['profilePictureURL']}
             />
             <button>Submit URL</button>
             <br />
             Image Preview: <br />
-            <div className='profilePictureContainer'>
-                <img src={imageURL ? imageURL : guestIcon}
-                    className="profilePicture"
-                />
-
-            </div>
+            
             <div>Image not cropped as expected? Upload a square image to an image hosting platform:</div>
 
-            <div>Set user color:</div>
+            <div>Set user color:</div>  
         </div>
     );
 }

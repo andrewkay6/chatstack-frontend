@@ -33,7 +33,7 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
                 <div className="disconnectMessage" title="Click to refresh" onClick={handleDisconnectClick}>Disconnected</div>
             );
         }
-    }, [isConnected])
+    }, [isConnected, userInfo])
     return (
         <div className="settingsBarContainer">
             <div className="settingsBarIconContainer" >
@@ -53,5 +53,7 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
         </div>
     );
 }
+
+
 
 export default SettingsBar;

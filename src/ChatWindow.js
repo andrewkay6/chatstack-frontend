@@ -10,6 +10,7 @@ import InfoWindow from './InfoWindow';
 import { parseIncomingMessages, formatMessageHistory, formatUserData} from './ChatParsingTools';
 import {fetchMessageHistory, fetchUserInfo} from './ChatAPICalls';
 
+
 const ChatWindow = ({ setAppState }) => {
   //This state variable controls the message history that the window will actually display. 
   //It groups messages from messageList by username.
