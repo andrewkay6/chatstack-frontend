@@ -4,7 +4,7 @@ import logoutIcon from "./logout.png";
 import infoIcon from "./info.png"
 import { useEffect, useState } from "react";
 
-const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, showModalWindow, reconnect }) => {
+const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, showModalWindow, reconnect, userInfo }) => {
 
     const [connectedMessage, setConnectedMessage] = useState(<></>);
     const handleLogoutClick = () => {
@@ -25,7 +25,7 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
     useEffect(() => {
         if (isConnected){
             setConnectedMessage (
-                <div className="connectedMessage">Connected as: abc</div>
+                <div className="connectedMessage">Connected as: {userInfo['username'] + ""}</div>
             );
         }
         else {

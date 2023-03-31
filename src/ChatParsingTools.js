@@ -64,6 +64,18 @@ const parseDate = (dateString) => {
     let formattedNewDate = newDate.toLocaleString('en-US', options);
     return formattedNewDate;
 }
+    const formatUserData = (userData) => {     
+        let formattedUserData = {};
+        
+        formattedUserData['userID'] = userData[0];
+        formattedUserData['username'] = userData[1];
+        formattedUserData['userColor'] = userData[2];
+        formattedUserData['profilePictureURL'] = userData[3];
+        formattedUserData['userCreationDate'] = parseDate(userData[4]);
+        
+        return formattedUserData;
+
+}
 
 
-export { parseIncomingMessages, formatMessageHistory, parseDate };
+export { parseIncomingMessages, formatMessageHistory, parseDate, formatUserData };

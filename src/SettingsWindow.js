@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import validUrl from 'valid-url';
+import guestIcon from './guest.png';
 const SettingsWindow = () => {
 
 
@@ -23,9 +24,6 @@ const SettingsWindow = () => {
         setImageURL(event.target.value);
     }
 
-
-
-
     return (
         <div className="settingsWindow">
             <div className="settingsWindowTitle">
@@ -42,7 +40,7 @@ const SettingsWindow = () => {
             <br />
             Image Preview: <br />
             <div className='profilePictureContainer'>
-                <img src={imageURL}
+                <img src={imageURL ? imageURL : guestIcon}
                     className="profilePicture"
                 />
 

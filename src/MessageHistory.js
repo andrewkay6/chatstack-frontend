@@ -4,9 +4,9 @@ import guestIcon from './guest.png';
 const MessageHistory = ({ messageHistory }) => {
   const [showDateTime, setShowDateTime] = useState(true);
 
-  
+
   let messageHistoryContents = (<></>);
-  
+
   messageHistoryContents = (
     <div className="messageHistoryTableContainer">
       <div className="messageHistoryTable">
@@ -15,11 +15,11 @@ const MessageHistory = ({ messageHistory }) => {
             <div className="messageBlockHeader">
               <div className='profilePictureContainer'>
                 <img src={messageBlock.profilePictureURL ? messageBlock.profilePictureURL : guestIcon}
-                    className="profilePicture"
+                  className="profilePicture"
                 />
               </div>
-              <div className="usernameData" style={{color: messageBlock.userColor}}>{messageBlock.username}</div>
-              
+              <div className="usernameData" style={{ color: messageBlock.userColor }}>{messageBlock.username}</div>
+
             </div>
             <div className="messageBlockData">
               {messageBlock.messageContent.map((messageObject, messageIndex) => (

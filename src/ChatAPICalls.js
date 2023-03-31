@@ -25,8 +25,13 @@ const fetchMessageHistory = async () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({}),
+      body: JSON.stringify({})
     }
+
+    const response = await fetch('http://localhost:5000/api/fetch-current-user-info', requestOptions);
+    const data = await response.json();
+
+    return data;
   }
 
   export {fetchMessageHistory, fetchUserInfo}
