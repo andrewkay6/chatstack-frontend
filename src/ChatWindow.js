@@ -6,9 +6,9 @@ import SettingsBar from './SettingsBar';
 import Modal from './Modal';
 import LogoutWindow from './LogoutWindow';
 import SettingsWindow from './SettingsWindow';
-
-
-import { parseIncomingMessages, formatMessageHistory, parseDate } from './ChatParsingTools';
+import InfoWindow from './InfoWindow';
+import { parseIncomingMessages, formatMessageHistory} from './ChatParsingTools';
+import {fetchMessageHistory, fetchUserInfo} from './ChatAPICalls';
 
 const ChatWindow = ({ setAppState }) => {
   //This state variable controls the message history that the window will actually display. 
@@ -25,38 +25,17 @@ const ChatWindow = ({ setAppState }) => {
   const [modalWindowContents, setModalWindowContents] = useState((<></>));
 
 
-  const numberOfMessagesToPreload = "50";
-
   const disconnectClient = () => {
     socket.disconnect();
   }
-  const getMessageHistory = async () => {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ numberOfMessages: numberOfMessagesToPreload, startFromID: "" }),
-    }
-
-    const response = await fetch('http://localhost:5000/api/fetch-newest-messages', requestOptions);
-    const data = await response.json();
-    const messages = parseIncomingMessages(data['messages']).reverse();
-
-    setMessageList(messages);
-    setMessageHistory(formatMessageHistory(messages));
-  }
+  
 
   const sendMessage = () => {
     socket.emit("send_message", JSON.stringify({ message: message }));
     setMessage("");
   }
 
-
   const handleIncomingData = (data) => {
-
     const parsedData = JSON.parse(data);
     const newMessage = parseIncomingMessages(parsedData['messages']);
     setMessageList(prevList => [...prevList, ...newMessage]);
@@ -68,15 +47,26 @@ const ChatWindow = ({ setAppState }) => {
   }
 
   const reconnect = () => {
-    console.log('reconnect');
+    setSocket(initializeSocket());
   }
-  useEffect(() => {
+  const getMessageHistory = async () => { 
+    const data = await fetchMessageHistory();
+    const messages = parseIncomingMessages(data['messages']).reverse();
+    setMessageList(messages);
+    setMessageHistory(formatMessageHistory(messages));
+  }
+  const initializeSocket = () => {
     const newSocket = io("http://localhost:5000/", {
       transports: ["websocket"],
       cors: {
         origin: "http://localhost:3000",
       },
     });
+    return newSocket;
+  }
+
+  useEffect(() => {
+    const newSocket = initializeSocket();
     setSocket(newSocket);
     getMessageHistory();
 
@@ -102,6 +92,7 @@ const ChatWindow = ({ setAppState }) => {
       });
 
       socket.on('data', (data) => {
+        console.log(data);
         handleIncomingData(data);
       });
 
@@ -130,8 +121,15 @@ const ChatWindow = ({ setAppState }) => {
         );
         break;
       case "settings":
+        console.log("got to settings")
         setModalWindowContents(
           <SettingsWindow
+          />
+        );
+        break;
+      case "info":
+        setModalWindowContents(
+          <InfoWindow
           />
         );
         break;
@@ -139,6 +137,8 @@ const ChatWindow = ({ setAppState }) => {
         break;
     }
   }, [modalWindowState])
+
+ 
 
   return (
     <>

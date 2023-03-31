@@ -1,5 +1,6 @@
 const databaseTimezone = "GMT";
 
+//This function takes a list of message history objects from the database and parses them into a more readable format.
 const parseIncomingMessages = (incomingMessages) => {
     let parsedMessages = [];
 
@@ -20,6 +21,7 @@ const parseIncomingMessages = (incomingMessages) => {
     return parsedMessages;
 }
 
+//This function takes a list of message history objects and groups them by username.
 const formatMessageHistory = (messageHistoryList) => {
     let formattedMessageHistory = [];
     let currentMessageBlock = { username: "", userColor: "", profilePictureURL: "", messageContent: [] };
@@ -43,6 +45,7 @@ const formatMessageHistory = (messageHistoryList) => {
     return formattedMessageHistory;
 }
 
+//This function takes a date string from the database and converts it to a more readable format.
 const parseDate = (dateString) => {
     //The database is expected to output YYYY-MM-DD HH:MM:MM (this comes from json.dumps(default=str) in python)
     //The database stores values in GMT by default
@@ -61,5 +64,6 @@ const parseDate = (dateString) => {
     let formattedNewDate = newDate.toLocaleString('en-US', options);
     return formattedNewDate;
 }
+
 
 export { parseIncomingMessages, formatMessageHistory, parseDate };

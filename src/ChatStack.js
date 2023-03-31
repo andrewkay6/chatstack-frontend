@@ -21,6 +21,7 @@ const ChatStack = () => {
                 <SignUp appState={appState} setAppState={setAppState}/>
             </div>
         );
+    
     }
     if (appState === "chat"){
         pageContents = (

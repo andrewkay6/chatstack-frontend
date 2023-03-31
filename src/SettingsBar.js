@@ -10,10 +10,13 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
     const handleLogoutClick = () => {
         setModalWindowState("logout")
         setShowModalWindow(true);
-
     }
     const handleSettingsClick = () => {
         setModalWindowState("settings")
+        setShowModalWindow(true);
+    }
+    const handleInfoClick = () => {
+        setModalWindowState("info");
         setShowModalWindow(true);
     }
     const handleDisconnectClick = () => {
@@ -40,7 +43,7 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
                 <img src={logoutIcon} alt="Logout" title="Logout" onClick={handleLogoutClick} />
             </div>
             <div className="settingsBarIconContainer" >
-                <img src={infoIcon} alt="Info" title="Info" onClick={handleLogoutClick} />
+                <img src={infoIcon} alt="Info" title="Info" onClick={handleInfoClick} />
             </div>
             <div className="settingsBarItemContainer">
                 {connectedMessage}
