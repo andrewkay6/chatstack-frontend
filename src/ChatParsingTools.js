@@ -77,5 +77,4 @@ const parseDate = (dateString) => {
 
 }
 
-
 export { parseIncomingMessages, formatMessageHistory, parseDate, formatUserData };

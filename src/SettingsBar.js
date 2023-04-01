@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, showModalWindow, reconnect, userInfo }) => {
 
     const [connectedMessage, setConnectedMessage] = useState(<></>);
+    
     const handleLogoutClick = () => {
         setModalWindowState("logout")
         setShowModalWindow(true);
@@ -41,9 +42,6 @@ const SettingsBar = ({ setShowModalWindow, setModalWindowState, isConnected, sho
             </div>
             <div className="settingsBarIconContainer" >
                 <img src={logoutIcon} alt="Logout" title="Logout" onClick={handleLogoutClick} />
-            </div>
-            <div className="settingsBarIconContainer" >
-                <img src={infoIcon} alt="Info" title="Info" onClick={handleInfoClick} />
             </div>
             <div className="settingsBarItemContainer">
                 {connectedMessage}

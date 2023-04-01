@@ -7,7 +7,7 @@ import Modal from './Modal';
 import LogoutWindow from './LogoutWindow';
 import SettingsWindow from './SettingsWindow';
 import InfoWindow from './InfoWindow';
-import { parseIncomingMessages, formatMessageHistory, formatUserData} from './ChatParsingTools';
+import {parseIncomingMessages, formatMessageHistory, formatUserData} from './ChatParsingTools';
 import {fetchMessageHistory, fetchUserInfo} from './ChatAPICalls';
 
 

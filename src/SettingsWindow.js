@@ -4,6 +4,7 @@ import validUrl from 'valid-url';
 import guestIcon from './guest.png';
 import MessageBlockHeader from "./MessageBlockHeader";
 import { updateUserInfo, fetchUserInfo } from "./ChatAPICalls";
+import { formatUserData } from "./ChatParsingTools";
 
 const SettingsWindow = ({ userInfo, setUserInfo }) => {
 
@@ -17,7 +18,6 @@ const SettingsWindow = ({ userInfo, setUserInfo }) => {
     const colorPickerRef = useRef(null);
     const handleBlockPickerChange = (newColor) => {
         setColor(newColor['hex']);
-        console.log(newColor);
     }
 
     let colorPicker = (<></>);
@@ -76,12 +76,10 @@ const SettingsWindow = ({ userInfo, setUserInfo }) => {
         let newUserInfo = JSON.parse(JSON.stringify(userInfo));
         newUserInfo['profilePictureURL'] = imageURL;
         newUserInfo['userColor'] = color;
-        await updateUserInfo(newUserInfo);
-
+        const successMessage = await updateUserInfo(newUserInfo);
+        console.log(successMessage);
         const newUserInfoFromServer = await fetchUserInfo();
-
-        setUserInfo(newUserInfoFromServer);
-
+        setUserInfo(formatUserData(newUserInfoFromServer['user']));
     }
 
 

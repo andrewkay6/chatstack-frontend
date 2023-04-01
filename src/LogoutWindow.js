@@ -1,6 +1,6 @@
 import React from "react";
 
-const LogoutWindow = ({handleDisconnect, setAppState}) => {
+const LogoutWindow = ({handleDisconnect, setAppState, visible}) => {
     const logoutUser = () => {
         handleDisconnect();
         setAppState("welcomePage");
